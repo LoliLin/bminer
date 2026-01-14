@@ -20,7 +20,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Java 8 for Ant build
+      - name: Set up Java 8 for Gradle build
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -35,29 +35,26 @@ jobs:
         run: |
           sdkmanager --install \
             "platform-tools" \
-            "platforms;android-8" \
-            "build-tools;19.1.0" \
-            "tools"
+            "platforms;android-19" \
+            "build-tools;19.1.0"
 
       - name: Accept licenses
         env:
           SKIP_JDK_VERSION_CHECK: "1"
         run: yes | sdkmanager --licenses
 
-      - name: Install Ant
-        run: sudo apt-get update && sudo apt-get install -y ant
-
-      - name: Generate Ant build files
-        run: |
-          export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$PATH"
-          android update project -p bminer -t android-8
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "3.3"
 
       - name: Build debug APK
-        run: ant debug -f bminer/build.xml
+        working-directory: bminer
+        run: gradle assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: bminer-debug-apk
-          path: bminer/bin/*-debug.apk
+          path: bminer/build/outputs/apk/debug/*.apk
           if-no-files-found: error
