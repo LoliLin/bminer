@@ -14,7 +14,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 17 for Android SDK tools
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Java 8 for Ant build
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -24,6 +30,8 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install SDK packages
+        env:
+          SKIP_JDK_VERSION_CHECK: "1"
         run: |
           sdkmanager --install \
             "platform-tools" \
@@ -32,6 +40,8 @@ jobs:
             "tools"
 
       - name: Accept licenses
+        env:
+          SKIP_JDK_VERSION_CHECK: "1"
         run: yes | sdkmanager --licenses
 
       - name: Install Ant
