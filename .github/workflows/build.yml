@@ -35,7 +35,7 @@ jobs:
         run: |
           sdkmanager --install \
             "platform-tools" \
-            "platforms;android-19" \
+            "platforms;android-8" \
             "build-tools;19.1.0" \
             "tools"
 
@@ -50,7 +50,7 @@ jobs:
       - name: Generate Ant build files
         run: |
           export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$PATH"
-          android update project -p bminer -t android-19
+          android update project -p bminer -t android-8
 
       - name: Build debug APK
         run: ant debug -f bminer/build.xml
